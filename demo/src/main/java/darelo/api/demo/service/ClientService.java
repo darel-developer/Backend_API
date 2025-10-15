@@ -2,19 +2,39 @@ package darelo.api.demo.service;
 
 import darelo.api.demo.entities.Client;
 import darelo.api.demo.repository.ClientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientService {
 
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
     public ClientService(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 
-    public void creer(Client client){
+    public String creer(Client client) {
+        Client clientDansLaBDD = this.clientRepository.findByEmail(client.getEmail());
+        if (clientDansLaBDD != null) {
+            return "L'adresse email existe déjà.";
+        }
+
         this.clientRepository.save(client);
+        return "Création du compte réussie.";
+    }
+
+    public List<Client> rechercher() {
+        return this.clientRepository.findAll();
+    }
+
+    public Client lire(int id) {
+        Optional<Client> optionalClient = this.clientRepository.findById(id);
+        if (optionalClient.isPresent()){
+            return optionalClient.get();
+        }
+        return null;
     }
 }
