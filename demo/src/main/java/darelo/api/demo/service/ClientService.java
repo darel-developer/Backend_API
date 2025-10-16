@@ -17,7 +17,7 @@ public class ClientService {
     }
 
     public String creer(Client client) {
-        Client clientDansLaBDD = this.clientRepository.findByEmail(client.getEmail());
+        List<Client> clientDansLaBDD = this.clientRepository.findAllByEmail(client.getEmail());
         if (clientDansLaBDD != null) {
             return "L'adresse email existe déjà.";
         }
@@ -37,4 +37,13 @@ public class ClientService {
         }
         return null;
     }
+
+    public Client LireOuCreer(Client clientInput) {
+        List<Client> clients = clientRepository.findAllByEmail(clientInput.getEmail());
+        if (!clients.isEmpty()) {
+            return clients.get(0); // On retourne le premier trouvé
+        }
+        return clientRepository.save(clientInput);
+    }
+
 }
